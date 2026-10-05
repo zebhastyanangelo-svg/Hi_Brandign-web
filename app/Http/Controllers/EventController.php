@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
 use App\Models\Event;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class EventController extends Controller
 {
@@ -27,5 +32,59 @@ class EventController extends Controller
         $upcomingEvents = $events->reject(fn ($event) => $event === $featuredEvent)->values();
 
         return view('events.index', compact('featuredEvent', 'upcomingEvents'));
+    }
+
+    public function show(Event $event)
+    {
+        if (!$event->is_published) {
+            abort(404);
+        }
+
+        $bankDetails = $event->bank_details_array;
+
+        return view('events.show', compact('event', 'bankDetails'));
+    }
+
+    public function checkout(Request $request, Event $event)
+    {
+        if (!$event->is_published) {
+            abort(404);
+        }
+
+        $validated = $request->validate([
+            'tickets' => ['required', 'integer', 'min:1', 'max:' . $event->available_tickets],
+            'attendees' => ['required', 'array', 'size:' . $request->input('tickets')],
+            'attendees.*.first_name' => ['required', 'string', 'max:100'],
+            'attendees.*.last_name' => ['required', 'string', 'max:100'],
+            'attendees.*.document' => ['required', 'string', 'max:50'],
+            'attendees.*.email' => ['required', 'email', 'max:255'],
+            'payment_reference' => ['required', 'string', 'max:100'],
+            'payment_date' => ['required', 'date', 'before_or_equal:today'],
+            'proof' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
+        ]);
+
+        $proof = $request->file('proof');
+        $proofPath = $proof->store('booking-proofs/' . $event->id, 'public');
+
+        $booking = Booking::create([
+            'event_id' => $event->id,
+            'reference' => 'BK-' . strtoupper(Str::random(8)),
+            'total_amount' => $event->price * $validated['tickets'],
+            'tickets_count' => $validated['tickets'],
+            'status' => 'pendiente',
+            'payment_reference' => $validated['payment_reference'],
+            'payment_date' => $validated['payment_date'],
+            'proof_path' => $proofPath,
+        ]);
+
+        foreach ($validated['attendees'] as $attendeeData) {
+            $booking->attendees()->create($attendeeData);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tu reserva ha sido enviada para revisión. Te notificaremos cuando sea aprobada.',
+            'booking' => $booking->load('attendees'),
+        ]);
     }
 }
