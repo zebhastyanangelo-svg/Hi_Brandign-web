@@ -107,26 +107,22 @@
             </div>
 
             <div class="event-info-card bank-details-card">
-                <h3>Datos para transferencia</h3>
-                <dl class="event-info-list">
-                    <div>
-                        <dt>Banco</dt>
-                        <dd>{{ $bankDetails['bank'] }}</dd>
-                    </div>
-                    <div>
-                        <dt>Cuenta</dt>
-                        <dd>{{ $bankDetails['account'] }}</dd>
-                    </div>
-                    <div>
-                        <dt>Titular</dt>
-                        <dd>{{ $bankDetails['holder'] }}</dd>
-                    </div>
-                    <div>
-                        <dt>Cédula / RIF</dt>
-                        <dd>{{ $bankDetails['document'] }}</dd>
-                    </div>
-                </dl>
-                <p class="bank-details-note">Realiza la transferencia y guarda el comprobante para el siguiente paso.</p>
+                <h3>Canales de pago aceptados</h3>
+                @if ($paymentMethods->isEmpty())
+                    <p class="bank-details-note">Los canales de pago no están disponibles temporalmente. Vuelve a intentarlo en unos minutos.</p>
+                @else
+                    <ul style="margin: 0; padding: 0; list-style: none; display: grid; gap: 10px;">
+                        @foreach ($paymentMethods as $method)
+                            <li style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600;">
+                                <span class="payment-method-icon" aria-hidden="true" style="width: 32px; height: 32px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                                </span>
+                                <span>{{ $method->name }} <small style="display: block; color: var(--muted); font-size: 10px; font-weight: 500;">{{ $method->type_label }}</small></span>
+                            </li>
+                        @endforeach
+                    </ul>
+                    <p class="bank-details-note">Selecciona el canal en el paso de pago, realiza la transferencia y guarda el comprobante.</p>
+                @endif
             </div>
         </aside>
     </section>
@@ -179,40 +175,87 @@
             </div>
         </div>
 
-        <!-- Step 3: Payment Details -->
+        <!-- Step 3: Payment Method -->
         <div class="checkout-step" data-step="3" hidden>
-            <p class="eyebrow">Paso 3 de 4</p>
-            <h2>Instrucciones de pago</h2>
-            <p class="form-intro">Realiza la transferencia con los siguientes datos y conserva el comprobante.</p>
+            <p class="eyebrow">Paso 3 de 4 · Método de pago</p>
+            <h2>Selecciona el canal por el que pagaste</h2>
+            <p class="form-intro">Realiza la transferencia con los datos del canal elegido y conserva el comprobante.</p>
 
-            <div class="bank-details-card" style="margin-bottom: 24px;">
-                <dl class="bank-details-grid">
-                    <div class="bank-detail-item">
-                        <span class="bank-detail-label">Banco</span>
-                        <span class="bank-detail-value">{{ $bankDetails['bank'] }}</span>
-                    </div>
-                    <div class="bank-detail-item">
-                        <span class="bank-detail-label">Cuenta</span>
-                        <span class="bank-detail-value">{{ $bankDetails['account'] }}</span>
-                    </div>
-                    <div class="bank-detail-item">
-                        <span class="bank-detail-label">Titular</span>
-                        <span class="bank-detail-value">{{ $bankDetails['holder'] }}</span>
-                    </div>
-                    <div class="bank-detail-item">
-                        <span class="bank-detail-label">Cédula / RIF</span>
-                        <span class="bank-detail-value">{{ $bankDetails['document'] }}</span>
-                    </div>
-                    <div class="bank-detail-item">
-                        <span class="bank-detail-label">Referencia</span>
-                        <span class="bank-detail-value">Usa tu nombre + {{ $event->title }}</span>
-                    </div>
-                    <div class="bank-detail-item">
-                        <span class="bank-detail-label">Monto</span>
-                        <span class="bank-detail-value" id="payment-total">${{ number_format($event->price, 2) }}</span>
-                    </div>
-                </dl>
-            </div>
+            @if ($paymentMethods->isEmpty())
+                <div class="admin-empty-state" style="padding: 32px 24px;">
+                    <span class="empty-icon">🏦</span>
+                    <h3>Pagos no disponibles</h3>
+                    <p>Los canales de pago no están configurados temporalmente. Intenta más tarde.</p>
+                </div>
+            @else
+                <div class="payment-methods" role="radiogroup" aria-label="Métodos de pago disponibles">
+                    @foreach ($paymentMethods as $method)
+                        <label class="payment-method">
+                            <input type="radio"
+                                   name="payment_method_id"
+                                   value="{{ $method->id }}"
+                                   data-method-panel="{{ $method->id }}"
+                                   {{ $loop->first ? 'checked' : '' }}
+                                   required>
+                            <span class="payment-method-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                            </span>
+                            <span class="payment-method-text">
+                                <strong>{{ $method->name }}</strong>
+                                <small>{{ $method->type_label }}</small>
+                            </span>
+                        </label>
+                    @endforeach
+                </div>
+
+                @foreach ($paymentMethods as $method)
+                    <section class="payment-instructions"
+                             data-method-panel="{{ $method->id }}"
+                             {{ $loop->first ? '' : 'hidden' }}>
+                        <h3 class="payment-instructions-title">Datos para transferir a {{ $method->name }}</h3>
+                        <dl class="payment-instructions-list">
+                            @if ($method->account_holder)
+                                <div>
+                                    <dt>Titular</dt>
+                                    <dd>{{ $method->account_holder }}</dd>
+                                </div>
+                            @endif
+                            @if ($method->bank)
+                                <div>
+                                    <dt>Banco / Plataforma</dt>
+                                    <dd>{{ $method->bank }}</dd>
+                                </div>
+                            @endif
+                            @if ($method->account_number)
+                                <div>
+                                    <dt>Cuenta / Teléfono / Correo</dt>
+                                    <dd>{{ $method->account_number }}</dd>
+                                </div>
+                            @endif
+                            @if ($method->tax_id)
+                                <div>
+                                    <dt>Cédula / RIF</dt>
+                                    <dd>{{ $method->tax_id }}</dd>
+                                </div>
+                            @endif
+                            @if ($method->notes)
+                                <div>
+                                    <dt>Instrucciones</dt>
+                                    <dd>{{ $method->notes }}</dd>
+                                </div>
+                            @endif
+                            <div>
+                                <dt>Monto a transferir</dt>
+                                <dd class="payment-total-amount">${{ number_format($event->price, 2) }}</dd>
+                            </div>
+                            <div>
+                                <dt>Referencia sugerida</dt>
+                                <dd>Tu nombre + {{ $event->title }}</dd>
+                            </div>
+                        </dl>
+                    </section>
+                @endforeach
+            @endif
 
             <div class="checkout-navigation">
                 <button type="button" class="button button--outline prev-step" data-prev="2">Anterior</button>
@@ -315,7 +358,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const attendeesContainer = document.getElementById('attendees-container');
     const summaryQty = document.getElementById('summary-qty');
     const summaryTotal = document.getElementById('summary-total');
-    const paymentTotal = document.getElementById('payment-total');
+    const paymentTotals = checkoutModal?.querySelectorAll('.payment-total-amount');
+    const methodInputs = checkoutModal?.querySelectorAll('input[name="payment_method_id"]');
+    const methodPanels = checkoutModal?.querySelectorAll('[data-method-panel]:not(input)');
     const availableTicketsEl = document.getElementById('available-tickets');
     const successAttendees = document.getElementById('success-attendees');
     const bookingReference = document.getElementById('booking-reference');
@@ -383,8 +428,17 @@ document.addEventListener('DOMContentLoaded', () => {
         summaryQty.textContent = qty;
         const total = (EVENT_PRICE * qty).toFixed(2);
         summaryTotal.textContent = '$' + total;
-        paymentTotal.textContent = '$' + total;
+        paymentTotals?.forEach(el => el.textContent = '$' + total);
     }
+
+    // Payment method selection: muestra los datos del canal elegido
+    methodInputs?.forEach((input) => {
+        input.addEventListener('change', () => {
+            methodPanels?.forEach((panel) => {
+                panel.hidden = panel.dataset.methodPanel !== input.dataset.methodPanel;
+            });
+        });
+    });
 
     // Navigation
     checkoutModal?.querySelectorAll('.next-step').forEach(btn => {
@@ -436,6 +490,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return true;
         }
         if (step === 3) {
+            const selectedMethod = checkoutModal?.querySelector('input[name="payment_method_id"]:checked');
+            if (!selectedMethod) {
+                alert('Selecciona el canal por el que realizaste el pago.');
+                return false;
+            }
             return true;
         }
         return true;
@@ -484,6 +543,15 @@ document.addEventListener('DOMContentLoaded', () => {
         steps?.forEach((s, i) => s.hidden = i !== 0);
         attendeesContainer.innerHTML = '';
         form.reset();
+
+        // Restaura el primer método de pago y su panel de instrucciones
+        const firstMethod = methodInputs?.[0];
+        if (firstMethod) {
+            firstMethod.checked = true;
+            methodPanels?.forEach((panel) => {
+                panel.hidden = panel.dataset.methodPanel !== firstMethod.dataset.methodPanel;
+            });
+        }
     }
 
     // Form submit

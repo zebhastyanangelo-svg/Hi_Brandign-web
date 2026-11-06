@@ -2,13 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\AdminUser;
 use App\Models\CommunityMember;
 use App\Models\Event;
 use App\Models\Membership;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,10 +17,15 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'email_verified_at' => now(),
+                'password' => Hash::make('password'),
+                'remember_token' => Str::random(10),
+            ]
+        );
 
         foreach ([
             ['name' => 'Daylight', 'slug' => 'daylight', 'description' => 'Un lugar para empezar a encontrarte.', 'price' => 1800, 'billing_period' => 'mes', 'featured' => false, 'features' => ['Acceso flexible entre semana', 'Café de especialidad', 'Comunidad Hi'], 'sort_order' => 1],
@@ -41,14 +47,16 @@ class DatabaseSeeder extends Seeder
         }
 
         foreach ([
-            ['title' => 'Founder Dinner & Demo Night', 'category' => 'CENA · NETWORKING', 'description' => 'Una mesa íntima para compartir lo que estamos construyendo y conocer a quienes vienen a cambiar las reglas.', 'place' => 'Casa Hi, Polanco', 'starts_at' => now()->addDays(7)->setTime(19, 0), 'price' => 150.00, 'capacity' => 50, 'bank_details' => ['bank' => 'BBVA', 'account' => '0123 4567 89 0123456789', 'holder' => 'Hi Branding S.L.', 'document' => 'B-12345678'], 'is_featured' => true, 'is_published' => true],
-            ['title' => 'Construir una marca que perdure', 'category' => 'WORKSHOP · BRAND', 'description' => 'Una sesión práctica sobre estrategia, voz y decisiones de diseño con intención.', 'place' => 'Estudio Norte', 'starts_at' => now()->addDays(14)->setTime(10, 30), 'price' => 200.00, 'capacity' => 30, 'bank_details' => ['bank' => 'BBVA', 'account' => '0123 4567 89 0123456789', 'holder' => 'Hi Branding S.L.', 'document' => 'B-12345678'], 'is_featured' => false, 'is_published' => true],
-            ['title' => 'Capital con propósito', 'category' => 'CONVERSACIÓN · CAPITAL', 'description' => 'Fundadores e inversionistas conversan sobre crecimiento sostenible y nuevas formas de financiarlo.', 'place' => 'Casa Hi, Polanco', 'starts_at' => now()->addDays(21)->setTime(18, 0), 'price' => 100.00, 'capacity' => 40, 'bank_details' => ['bank' => 'BBVA', 'account' => '0123 4567 89 0123456789', 'holder' => 'Hi Branding S.L.', 'document' => 'B-12345678'], 'is_featured' => false, 'is_published' => true],
-            ['title' => 'Product office hours', 'category' => 'CLÍNICA · PRODUCTO', 'description' => 'Trae tu reto de producto y trabajémoslo con líderes que ya recorrieron ese camino.', 'place' => 'Sala Estudio', 'starts_at' => now()->addDays(28)->setTime(12, 0), 'price' => 50.00, 'capacity' => 20, 'bank_details' => ['bank' => 'BBVA', 'account' => '0123 4567 89 0123456789', 'holder' => 'Hi Branding S.L.', 'document' => 'B-12345678'], 'is_featured' => false, 'is_published' => true],
+            ['title' => 'Founder Dinner & Demo Night', 'category' => 'CENA · NETWORKING', 'description' => 'Una mesa íntima para compartir lo que estamos construyendo y conocer a quienes vienen a cambiar las reglas.', 'place' => 'Casa Hi, Polanco', 'starts_at' => now()->addDays(7)->setTime(19, 0), 'price' => 150.00, 'capacity' => 50, 'is_featured' => true, 'is_published' => true],
+            ['title' => 'Construir una marca que perdure', 'category' => 'WORKSHOP · BRAND', 'description' => 'Una sesión práctica sobre estrategia, voz y decisiones de diseño con intención.', 'place' => 'Estudio Norte', 'starts_at' => now()->addDays(14)->setTime(10, 30), 'price' => 200.00, 'capacity' => 30, 'is_featured' => false, 'is_published' => true],
+            ['title' => 'Capital con propósito', 'category' => 'CONVERSACIÓN · CAPITAL', 'description' => 'Fundadores e inversionistas conversan sobre crecimiento sostenible y nuevas formas de financiarlo.', 'place' => 'Casa Hi, Polanco', 'starts_at' => now()->addDays(21)->setTime(18, 0), 'price' => 100.00, 'capacity' => 40, 'is_featured' => false, 'is_published' => true],
+            ['title' => 'Product office hours', 'category' => 'CLÍNICA · PRODUCTO', 'description' => 'Trae tu reto de producto y trabajémoslo con líderes que ya recorrieron ese camino.', 'place' => 'Sala Estudio', 'starts_at' => now()->addDays(28)->setTime(12, 0), 'price' => 50.00, 'capacity' => 20, 'is_featured' => false, 'is_published' => true],
         ] as $event) {
             Event::updateOrCreate(['title' => $event['title']], $event);
         }
 
+        $this->call(PaymentMethodSeeder::class);
         $this->call(AdminUserSeeder::class);
+        $this->call(DashboardDemoSeeder::class);
     }
 }

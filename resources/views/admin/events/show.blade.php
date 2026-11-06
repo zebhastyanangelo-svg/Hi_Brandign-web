@@ -51,25 +51,50 @@
         </div>
 
         <div class="bank-details-card">
-            <h3>Datos de pago para transferencia</h3>
-            <div class="bank-details-grid">
-                <div class="bank-detail-item">
-                    <span class="bank-detail-label">Banco</span>
-                    <span class="bank-detail-value">{{ $event->bank_details['bank'] ?? '—' }}</span>
+            <h3>Métodos de pago de este evento</h3>
+            @php($applicableMethods = $event->availablePaymentMethods())
+            @if ($applicableMethods->isEmpty())
+                <div class="admin-empty-state" style="padding: 32px 24px;">
+                    <span class="empty-icon">🏦</span>
+                    <p>No hay métodos de pago activos. Actívalos desde <a href="{{ route('admin.payment-methods.index') }}">Métodos de Pago</a>.</p>
                 </div>
-                <div class="bank-detail-item">
-                    <span class="bank-detail-label">Cuenta</span>
-                    <span class="bank-detail-value">{{ $event->bank_details['account'] ?? '—' }}</span>
-                </div>
-                <div class="bank-detail-item">
-                    <span class="bank-detail-label">Titular</span>
-                    <span class="bank-detail-value">{{ $event->bank_details['holder'] ?? '—' }}</span>
-                </div>
-                <div class="bank-detail-item">
-                    <span class="bank-detail-label">Cédula / RIF</span>
-                    <span class="bank-detail-value">{{ $event->bank_details['document'] ?? '—' }}</span>
-                </div>
-            </div>
+            @else
+                <p class="bank-details-note" style="margin: 0 0 16px;">
+                    {{ $event->paymentMethods->isNotEmpty() ? 'Este evento solo acepta los siguientes canales.' : 'Este evento usa todos los métodos de pago activos de la configuración global.' }}
+                </p>
+                @foreach ($applicableMethods as $method)
+                    <div class="bank-details-grid" style="margin-bottom: 16px; padding-bottom: 16px; {{ $loop->last ? '' : 'border-bottom: 1px solid var(--line);' }}">
+                        <div class="bank-detail-item">
+                            <span class="bank-detail-label">Método</span>
+                            <span class="bank-detail-value">{{ $method->name }} <small class="table-sub">({{ $method->type_label }})</small></span>
+                        </div>
+                        @if ($method->bank)
+                            <div class="bank-detail-item">
+                                <span class="bank-detail-label">Banco / Plataforma</span>
+                                <span class="bank-detail-value">{{ $method->bank }}</span>
+                            </div>
+                        @endif
+                        @if ($method->account_number)
+                            <div class="bank-detail-item">
+                                <span class="bank-detail-label">Cuenta / Teléfono / Correo</span>
+                                <span class="bank-detail-value">{{ $method->account_number }}</span>
+                            </div>
+                        @endif
+                        @if ($method->account_holder)
+                            <div class="bank-detail-item">
+                                <span class="bank-detail-label">Titular</span>
+                                <span class="bank-detail-value">{{ $method->account_holder }}</span>
+                            </div>
+                        @endif
+                        @if ($method->tax_id)
+                            <div class="bank-detail-item">
+                                <span class="bank-detail-label">Cédula / RIF</span>
+                                <span class="bank-detail-value">{{ $method->tax_id }}</span>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            @endif
         </div>
 
         <div style="display: flex; gap: 12px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line);">

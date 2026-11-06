@@ -75,28 +75,31 @@
         </div>
 
         <fieldset class="admin-form-group">
-            <legend>Datos bancarios para transferencia *</legend>
-            <div class="bank-details-grid">
-                <div class="admin-form-group" style="margin: 0;">
-                    <label for="bank_details[bank]">Banco *</label>
-                    <input type="text" id="bank_details[bank]" name="bank_details[bank]" value="{{ old('bank_details.bank', $event->bank_details['bank'] ?? '') }}" required maxlength="100" placeholder="ej. BBVA">
+            <legend>Métodos de pago de este evento</legend>
+            @if ($paymentMethods->isEmpty())
+                <div class="admin-empty-state" style="padding: 32px 24px;">
+                    <span class="empty-icon">🏦</span>
+                    <h3>No hay métodos de pago activos</h3>
+                    <p>Crea y activa métodos de pago desde <a href="{{ route('admin.payment-methods.index') }}">Métodos de Pago</a> para que los clientes puedan reportar sus transferencias.</p>
                 </div>
-
-                <div class="admin-form-group" style="margin: 0;">
-                    <label for="bank_details[account]">Número de cuenta *</label>
-                    <input type="text" id="bank_details[account]" name="bank_details[account]" value="{{ old('bank_details.account', $event->bank_details['account'] ?? '') }}" required maxlength="50" placeholder="ej. 0123 4567 89 0123456789">
+            @else
+                <div class="payment-methods" role="group" aria-label="Métodos de pago disponibles para el evento">
+                    @foreach ($paymentMethods as $method)
+                        <label class="payment-method">
+                            <input type="checkbox" name="payment_methods[]" value="{{ $method->id }}" {{ in_array($method->id, (array) old('payment_methods', $event->paymentMethods->pluck('id')->all())) ? 'checked' : '' }}>
+                            <span class="payment-method-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                            </span>
+                            <span class="payment-method-text">
+                                <strong>{{ $method->name }}</strong>
+                                <small>{{ $method->type_label }}{{ $method->bank ? ' · '.$method->bank : '' }}</small>
+                            </span>
+                        </label>
+                    @endforeach
                 </div>
-
-                <div class="admin-form-group" style="margin: 0;">
-                    <label for="bank_details[holder]">Titular *</label>
-                    <input type="text" id="bank_details[holder]" name="bank_details[holder]" value="{{ old('bank_details.holder', $event->bank_details['holder'] ?? '') }}" required maxlength="100" placeholder="ej. Hi Branding S.L.">
-                </div>
-
-                <div class="admin-form-group" style="margin: 0;">
-                    <label for="bank_details[document]">Cédula / RIF *</label>
-                    <input type="text" id="bank_details[document]" name="bank_details[document]" value="{{ old('bank_details.document', $event->bank_details['document'] ?? '') }}" required maxlength="50" placeholder="ej. J-12345678-9">
-                </div>
-            </div>
+                <p class="form-hint" style="margin-top: 12px;">Si no seleccionas ninguno, el checkout usará todos los métodos de pago activos de la configuración global.</p>
+                @error('payment_methods.*')<span class="field-error">{{ $message }}</span>@enderror
+            @endif
         </fieldset>
 
         <div class="admin-form-row">

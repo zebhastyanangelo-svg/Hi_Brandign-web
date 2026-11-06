@@ -35,7 +35,7 @@ class PortalPagesTest extends TestCase
         $this->get(route('memberships.index'))
             ->assertOk()
             ->assertSee('Espacios diseñados para')
-            ->assertSee('Consultar Membresía');
+            ->assertSee('Suscribirme ahora');
 
         $this->get(route('location.index'))
             ->assertOk()

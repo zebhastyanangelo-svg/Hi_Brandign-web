@@ -14,6 +14,7 @@ class Booking extends Model
         'total_amount',
         'tickets_count',
         'status',
+        'payment_method_id',
         'payment_reference',
         'payment_date',
         'proof_path',
@@ -34,6 +35,11 @@ class Booking extends Model
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function paymentMethod(): BelongsTo
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 
     public function attendees(): HasMany

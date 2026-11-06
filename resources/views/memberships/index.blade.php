@@ -9,7 +9,7 @@
         @foreach($memberships as $membership)
             <article class="plan-card">
                 <div class="plan-photo plan-photo--{{ $loop->iteration }}"><span>{{ $membership->capacity ?? ($loop->first ? 'Capacidad 25–30' : ($loop->last ? 'Capacidad 12' : 'Flexible')) }}</span></div>
-                <div class="plan-card-body"><p class="eyebrow">{{ $loop->first ? 'Eventos & grupo' : ($loop->last ? 'Salud & telemedicina' : 'Coworking & networking') }}</p><h2>{{ $membership->name }}</h2><p>{{ $membership->description }}</p><ul>@foreach($membership->features as $feature)<li><span aria-hidden="true">✳</span>{{ $feature }}</li>@endforeach</ul><div class="plan-price"><span>Inversión desde</span><strong>${{ number_format($membership->price) }} <small>/ mes</small></strong></div><a class="button button--rust" href="{{ route('appointments.index') }}">Consultar Membresía <span aria-hidden="true">↗</span></a></div>
+                <div class="plan-card-body"><p class="eyebrow">{{ $loop->first ? 'Eventos & grupo' : ($loop->last ? 'Salud & telemedicina' : 'Coworking & networking') }}</p><h2>{{ $membership->name }}</h2><p>{{ $membership->description }}</p><ul>@foreach($membership->features as $feature)<li><span aria-hidden="true">✳</span>{{ $feature }}</li>@endforeach</ul><div class="plan-price"><span>Inversión desde</span><strong>${{ number_format($membership->price) }} <small>/ mes</small></strong></div><a class="button button--rust" href="{{ route('memberships.checkout', $membership->slug) }}">Suscribirme ahora <span aria-hidden="true">↗</span></a></div>
             </article>
         @endforeach
     </section>

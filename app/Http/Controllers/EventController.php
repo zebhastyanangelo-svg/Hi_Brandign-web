@@ -7,7 +7,6 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -36,42 +35,46 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
-        if (!$event->is_published) {
+        if (! $event->is_published) {
             abort(404);
         }
 
-        $bankDetails = $event->bank_details_array;
+        $paymentMethods = $event->availablePaymentMethods();
 
-        return view('events.show', compact('event', 'bankDetails'));
+        return view('events.show', compact('event', 'paymentMethods'));
     }
 
     public function checkout(Request $request, Event $event)
     {
-        if (!$event->is_published) {
+        if (! $event->is_published) {
             abort(404);
         }
 
+        $applicableMethodIds = $event->availablePaymentMethods()->modelKeys();
+
         $validated = $request->validate([
-            'tickets' => ['required', 'integer', 'min:1', 'max:' . $event->available_tickets],
-            'attendees' => ['required', 'array', 'size:' . $request->input('tickets')],
+            'tickets' => ['required', 'integer', 'min:1', 'max:'.$event->available_tickets],
+            'attendees' => ['required', 'array', 'size:'.$request->input('tickets')],
             'attendees.*.first_name' => ['required', 'string', 'max:100'],
             'attendees.*.last_name' => ['required', 'string', 'max:100'],
             'attendees.*.document' => ['required', 'string', 'max:50'],
             'attendees.*.email' => ['required', 'email', 'max:255'],
+            'payment_method_id' => ['required', 'integer', Rule::in($applicableMethodIds)],
             'payment_reference' => ['required', 'string', 'max:100'],
             'payment_date' => ['required', 'date', 'before_or_equal:today'],
             'proof' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
         ]);
 
         $proof = $request->file('proof');
-        $proofPath = $proof->store('booking-proofs/' . $event->id, 'public');
+        $proofPath = $proof->store('booking-proofs/'.$event->id, 'public');
 
         $booking = Booking::create([
             'event_id' => $event->id,
-            'reference' => 'BK-' . strtoupper(Str::random(8)),
+            'reference' => 'BK-'.strtoupper(Str::random(8)),
             'total_amount' => $event->price * $validated['tickets'],
             'tickets_count' => $validated['tickets'],
             'status' => 'pendiente',
+            'payment_method_id' => $validated['payment_method_id'],
             'payment_reference' => $validated['payment_reference'],
             'payment_date' => $validated['payment_date'],
             'proof_path' => $proofPath,

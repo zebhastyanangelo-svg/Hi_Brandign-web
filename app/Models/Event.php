@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
@@ -16,7 +18,6 @@ class Event extends Model
         'price',
         'capacity',
         'image',
-        'bank_details',
         'is_featured',
         'is_published',
     ];
@@ -27,7 +28,6 @@ class Event extends Model
             'starts_at' => 'datetime',
             'price' => 'decimal:2',
             'capacity' => 'integer',
-            'bank_details' => 'array',
             'is_featured' => 'boolean',
             'is_published' => 'boolean',
         ];
@@ -43,6 +43,30 @@ class Event extends Model
         return $this->hasMany(Booking::class)->where('status', 'aprobado');
     }
 
+    public function paymentMethods(): BelongsToMany
+    {
+        return $this->belongsToMany(PaymentMethod::class);
+    }
+
+    /**
+     * Métodos de pago activos aplicables al evento.
+     * Si el evento no tiene métodos asignados, usa los métodos activos globales.
+     *
+     * @return Collection<int, PaymentMethod>
+     */
+    public function availablePaymentMethods(): Collection
+    {
+        $assigned = $this->paymentMethods()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        return $assigned->isNotEmpty()
+            ? $assigned
+            : PaymentMethod::query()->active()->orderBy('sort_order')->orderBy('name')->get();
+    }
+
     public function getSoldTicketsCountAttribute(): int
     {
         return $this->approvedBookings()->sum('tickets_count');
@@ -56,15 +80,5 @@ class Event extends Model
     public function getIsSoldOutAttribute(): bool
     {
         return $this->available_tickets <= 0;
-    }
-
-    public function getBankDetailsArrayAttribute(): array
-    {
-        return $this->bank_details ?? [
-            'bank' => '',
-            'account' => '',
-            'holder' => '',
-            'document' => '',
-        ];
     }
 }

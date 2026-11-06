@@ -60,6 +60,10 @@
             <section class="booking-detail-section">
                 <h3>Datos del pago</h3>
                 <div class="booking-detail-row">
+                    <span class="booking-detail-label">Método de pago</span>
+                    <span class="booking-detail-value">{{ $booking->paymentMethod?->name ?? '—' }}</span>
+                </div>
+                <div class="booking-detail-row">
                     <span class="booking-detail-label">Referencia de pago</span>
                     <span class="booking-detail-value">{{ $booking->payment_reference ?? '—' }}</span>
                 </div>

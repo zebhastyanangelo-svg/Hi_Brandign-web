@@ -1,169 +1,80 @@
-# HB · Hi Branding
+# HB · Hi Branding (`hibranding.net`)
 
-**Quiet Luxury Digital Platform** para descubrir espacios de trabajo, consultar membresías, solicitar asesorías y conectar con una comunidad de fundadores y profesionales.
+**Quiet Luxury Digital Platform** para descubrir espacios de trabajo, consultar membresías, reportar pagos, solicitar asesorías y conectar con una comunidad de fundadores y profesionales.
 
-Hi Branding reúne en una sola experiencia digital el ecosistema de espacios, eventos y comunidad de HB. La interfaz combina una identidad editorial cálida con componentes interactivos y contenido respaldado por Laravel.
-
-## Estado del producto
-
-El repositorio contiene una experiencia funcional de presentación y captura de solicitudes. Las membresías, perfiles y eventos se leen desde la base de datos cuando hay registros y ofrecen datos de muestra como fallback para instalaciones nuevas. Las solicitudes de asesoría se validan y guardan en la base de datos.
-
-Algunas acciones son demostrativas: el RSVP de eventos abre un correo, no crea una inscripción persistida; tampoco hay autenticación ni panel administrativo. La “Matriz Técnica de Especificaciones” no está implementada todavía en la vista de membresías.
+Hi Branding reúne en una sola experiencia digital el ecosistema de espacios, eventos, membresías y panel administrativo directivo de HB.
 
 ## Stack tecnológico
 
 - PHP 8.3+ y Laravel 13.
-- Blade para layouts y vistas de servidor.
-- Tailwind CSS 4 mediante `@tailwindcss/vite`, además de CSS propio.
+- Blade para layouts y vistas de servidor (público + panel directivo `/admin`).
+- Tailwind CSS 4 mediante `@tailwindcss/vite`, además de CSS editorial propio.
 - Vite 8 y JavaScript ES modules.
-- p5.js 2 para sketches en modo instancia.
-- Animate.css 4.1.1, cargado desde CDN.
-- SQLite por defecto; MySQL, MariaDB y PostgreSQL están disponibles mediante la configuración de Laravel.
-- PHPUnit 12 para pruebas y Pint para formato PHP.
+- p5.js 2 para sketches en modo instancia (`p5-hero`, `p5-badge`, `p5-network`).
+- Animate.css 4.1.1.
+- MySQL / MariaDB como motor de base de datos principal.
+- PHPUnit 12 para pruebas automatizadas y Laravel Pint para estilo de código.
 
-## Arquitectura
+## Configuración de Producción (cPanel · `hibranding.net`)
 
-```text
-app/
-  Http/Controllers/
-    AppointmentController.php
-    CommunityController.php
-    EventController.php
-    MembershipController.php
-  Models/
-    Appointment.php
-    CommunityMember.php
-    Event.php
-    Membership.php
-bootstrap/app.php             Middleware, routing y proxies de Codespaces
-database/
-  migrations/                 Esquemas de citas, miembros, eventos y membresías
-  seeders/DatabaseSeeder.php   Contenido inicial de demostración
-resources/
-  css/app.css                 Tailwind 4, tokens y estilos Quiet Luxury
-  js/app.js                   Navegación, filtros, loader y scroll reveals
-  js/p5-*.js                  Hero, badge y red de nodos
-  views/
-    layouts/app.blade.php     Header, footer, Animate.css y Vite
-    home.blade.php            Portada y espacios
-    memberships/index.blade.php
-    location/index.blade.php
-    appointments/index.blade.php
-    community/index.blade.php
-    events/index.blade.php
-routes/web.php                Rutas públicas y acciones de asesoría
-tests/Feature/                 Pruebas de rutas y comportamiento
+### 1. Base de datos MySQL en cPanel
+
+1. En **cPanel → MySQL® Databases**, asegúrate de tener creada la base de datos y el usuario con todos los privilegios (`ALL PRIVILEGES`):
+   - **Base de datos:** `rosanny2_hibranding`
+   - **Usuario:** `rosanny2_hibranding`
+2. En **cPanel → phpMyAdmin**, selecciona la base de datos `rosanny2_hibranding` e importa el archivo:
+   - `database/hi_branding_dump.sql`
+   *(Incluye estructura completa de tablas InnoDB `utf8mb4`, usuario administrador, planes de membresía, métodos de pago y datos iniciales).*
+
+### 2. Archivos y Document Root en cPanel
+
+El proyecto incluye un `.htaccess` en la raíz y otro en `public/.htaccess` para adaptarse a cualquier configuración de cPanel:
+
+- **Opción A (Subir todo a `public_html`):** Puedes subir todo el contenido del proyecto directamente a `public_html`. El archivo `.htaccess` raíz redirige de forma transparente todo el tráfico hacia `public/` y bloquea el acceso directo a `.env`, `storage/`, `database/`, `vendor/` y archivos internos.
+- **Opción B (Document Root apuntando a `public`):** Si colocas el proyecto en `/home/rosanny2/hibranding` y apuntas `public_html` (o el dominio `hibranding.net`) a `/home/rosanny2/hibranding/public`, funcionará directamente con `public/.htaccess`.
+
+### 3. Variables de entorno (`.env`)
+
+Verifica que el archivo `.env` en la raíz del proyecto tenga las credenciales de producción:
+
+```env
+APP_NAME="Hi Branding"
+APP_ENV=production
+APP_KEY=base64:/uzcV0YoHLXNijh/zpBdmwjr+ARJJop0axbqlf3IeWY=
+APP_DEBUG=false
+APP_URL=https://hibranding.net
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=rosanny2_hibranding
+DB_USERNAME=rosanny2_hibranding
+DB_PASSWORD="..Hibranding..00"
 ```
 
-`resources/views/welcome.blade.php` es la vista de bienvenida original de Laravel; la ruta `/` utiliza `home.blade.php`.
+### 4. Permisos en cPanel
 
-## Vistas y rutas
+Asegúrate de que las carpetas `storage/` y `bootstrap/cache/` tengan permisos de escritura (`755` o `775`).
+El sistema incluye además una ruta de respaldo automática (`/storage/{path}`) por si el enlace simbólico `public/storage` no está disponible en el servidor compartido.
 
-| Método y ruta | Nombre | Propósito |
-| --- | --- | --- |
-| `GET /` | `home` | Hero scrollytelling, búsqueda/filtros y espacios destacados. |
-| `GET /memberships` | `memberships.index` | Tarjetas de planes y contacto para consultar una membresía. |
-| `GET /location` | `location.index` | Sede, horarios, ubicación y servicios. |
-| `GET /appointments` | `appointments.index` | Próximas citas, historial, asesor asignado y formulario. |
-| `POST /appointments` | `appointments.store` | Valida y persiste una solicitud de asesoría. |
-| `GET /community` | `community.index` | Métricas, filtros y perfiles del club. |
-| `GET /events` | `events.index` | Evento destacado y agenda de próximos encuentros. |
+### 5. Acceso al Panel Directivo (`/admin`)
 
-Todas las rutas actuales son públicas. No hay inicio de sesión ni autorización por usuario. Las métricas de comunidad y los datos de asesor asignado son contenido de presentación, no agregados calculados desde una cuenta autenticada.
+- **URL:** `https://hibranding.net/admin/login`
+- **Usuario inicial:** `admin@hibranding.com`
+- **Contraseña inicial:** `admin123` *(se recomienda actualizarla tras el primer ingreso en **Configuración → Actualizar contraseña**)*.
 
-## Sistema de diseño
-
-### Paleta
-
-| Uso | Color |
-| --- | --- |
-| Fondo principal | `#FDFBF7` |
-| Fondo crema secundario | `#F7F3EE` |
-| Tarjetas | `#FFFFFF` / `#FCFAF7` |
-| Terracota | `#A8492A` |
-| Hover terracota | `#8C3B20` |
-| Texto principal | `#211E1D` |
-| Loader oscuro | `#1A1817` |
-
-### Tipografía y efectos
-
-- **Cormorant Garamond** para titulares y acentos en cursiva.
-- **Plus Jakarta Sans** para interfaz y cuerpo.
-- Sombras de baja intensidad, bordes cálidos y elevación discreta al hover.
-- Animate.css aplica `swing` a titulares seleccionados y `flipInY` a perfiles. Un `IntersectionObserver` activa reveals de títulos y tarjetas al entrar en pantalla; `prefers-reduced-motion` desactiva estas animaciones.
-- El loader HB aparece al entrar por primera vez en la sesión. El hero combina imagen, copy y buscador; el desplazamiento aplica zoom sutil, desplazamiento del texto y elevación del buscador.
-- p5.js contiene los sketches del hero, badge y red de nodos. Cada sketch se monta solo donde existe su contenedor.
-
-Tailwind 4 escanea las vistas Blade mediante `@source "../views/**/*.blade.php"` en `resources/css/app.css`. El layout carga la entrada con `@vite(['resources/css/app.css', 'resources/js/app.js'])`. En Codespaces, `TrustProxies` usa los encabezados reenviados para generar URLs HTTPS de assets bajo el host público actual.
-
-## Instalación local
-
-### Requisitos
-
-- PHP 8.3 o superior y Composer 2.
-- Node.js compatible con Vite 8 (20.19+ o 22.12+) y npm.
-- SQLite para la configuración inicial, o un servidor MySQL/MariaDB/PostgreSQL.
-
-### Preparación
+## Comandos útiles de mantenimiento
 
 ```bash
-git clone <url-del-repositorio>
-cd Hi_Brandign-web
-composer install
-npm install
-cp .env.example .env
-php artisan key:generate
-```
-
-Para usar SQLite, configura `DB_CONNECTION=sqlite` en `.env` y crea el archivo de base de datos si aún no existe:
-
-```bash
-touch database/database.sqlite
-php artisan migrate --seed
-```
-
-Para otro motor, configura `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` en `.env` antes de migrar.
-
-### Ejecutar
-
-En una terminal, inicia Laravel:
-
-```bash
-php artisan serve --host=0.0.0.0 --port=8000
-```
-
-En otra terminal, elige el modo de assets:
-
-```bash
-# Desarrollo con recarga de Vite
-npm run dev
-
-# O genera assets de producción/locales
+# Compilar assets de producción (ya compilados en public/build)
 npm run build
-```
 
-Abre `http://localhost:8000`. En Codespaces, utiliza la URL HTTPS que muestra el reenvío del puerto 8000. Si el HTML vuelve a enlazar assets a `localhost`, comprueba que no exista `public/hot` de un Vite dev server detenido y que el proxy reenvíe `X-Forwarded-Host` y `X-Forwarded-Proto`.
+# Ejecutar migraciones y seeders en MySQL
+php artisan migrate --seed --force
 
-### Datos iniciales
+# Limpiar cachés de Laravel
+php artisan optimize:clear
 
-`php artisan migrate --seed` crea las tablas y carga membresías, perfiles y eventos de muestra. La ejecución de `DatabaseSeeder` es idempotente para estos registros por slug/título; también crea un usuario de ejemplo `test@example.com`.
-
-## Pruebas y mantenimiento
-
-```bash
-# Suite PHPUnit completa
+# Ejecutar suite de pruebas PHPUnit
 php artisan test
-
-# Formato PHP
-vendor/bin/pint --dirty --format agent
-
-# Limpiar vistas y configuración compiladas
-php artisan view:clear
-php artisan config:clear
-php artisan route:clear
-
-# Reconstruir frontend
-npm run build
 ```
-
-Las pruebas Feature cubren el renderizado de rutas, URLs de assets detrás del proxy de Codespaces, validación y persistencia de citas, y lectura de miembros/eventos desde la base de datos.
