@@ -24,7 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             introLoader.classList.add('is-active');
 
-            window.setTimeout(() => {
+            const introVideo = introLoader.querySelector('#intro-video');
+
+            const dismissIntro = () => {
+                if (!introLoader.parentNode) return;
                 introLoader.classList.add('is-closing');
                 document.documentElement.classList.add('intro-revealing');
 
@@ -35,7 +38,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 window.setTimeout(() => introLoader.remove(), 750);
-            }, 1800);
+            };
+
+            if (introVideo) {
+                introVideo.play().catch(() => {
+                    // Autoplay fallback if blocked
+                });
+                introVideo.addEventListener('ended', dismissIntro);
+            } else {
+                window.setTimeout(dismissIntro, 1800);
+            }
+
+            const handleSkip = () => {
+                dismissIntro();
+                window.removeEventListener('click', handleSkip);
+                window.removeEventListener('keydown', handleSkip);
+            };
+
+            window.addEventListener('click', handleSkip, { once: true });
+            window.addEventListener('keydown', handleSkip, { once: true });
         }
     }
 

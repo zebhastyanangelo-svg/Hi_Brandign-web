@@ -760,13 +760,9 @@ h1 em, h2 em, .advisor-card h2 em { color: var(--rust); font-weight: 400; }
 }
 
 /* Cinematic intro and scroll-led home hero */
-.intro-loader { position: fixed; z-index: 100; inset: 0; display: grid; align-content: center; justify-items: center; gap: 9px; color: #fdfbf7; background: #1a1817; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .72s cubic-bezier(.22,.61,.36,1), visibility .72s linear; }
+.intro-loader { position: fixed; z-index: 9999; inset: 0; display: grid; align-content: center; justify-items: center; background: #FFFFFF; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .72s cubic-bezier(.22,.61,.36,1), visibility .72s linear; }
 .intro-loader.is-active { opacity: 1; visibility: visible; pointer-events: auto; }
 .intro-loader.is-closing { opacity: 0; visibility: hidden; pointer-events: none; }
-.intro-loader-mark { color: #e3a17f; font-family: var(--sans); font-size: clamp(80px, 16vw, 150px); font-weight: 500; line-height: .8; letter-spacing: 0; opacity: 0; transform: scale(.95); animation: intro-mark-in .85s .12s cubic-bezier(.2,.7,.2,1) forwards; }
-.intro-loader-name { color: rgb(253 251 247 / 72%); font-family: var(--serif); font-size: 13px; opacity: 0; animation: intro-name-in .7s .4s ease forwards; }
-@keyframes intro-mark-in { to { opacity: 1; transform: scale(1); } }
-@keyframes intro-name-in { to { opacity: 1; } }
 @keyframes intro-page-reveal { from { opacity: .82; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 html.intro-revealing body > .site-header { animation: intro-page-reveal .8s .02s both; }
 html.intro-revealing body > main:not(.checkout-page) { animation: intro-page-reveal .9s .12s both; }

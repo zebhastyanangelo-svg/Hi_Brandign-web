@@ -14,8 +14,9 @@
 </head>
 <body class="min-h-screen bg-[#FDFBF7] font-sans text-[#211E1D]">
     <div class="intro-loader" id="intro-loader" aria-hidden="true">
-        <div class="intro-loader-mark">hb</div>
-        <span class="intro-loader-name">Hi Branding</span>
+        <video autoplay muted playsinline class="max-w-full max-h-screen object-contain m-auto" id="intro-video">
+            <source src="{{ asset('Vectorizar_isologo_con_impacto_b…_bb828913_1080p.mp4') }}" type="video/mp4">
+        </video>
     </div>
     <a class="skip-link" href="#main-content">Saltar al contenido</a>
     <header class="site-header">
