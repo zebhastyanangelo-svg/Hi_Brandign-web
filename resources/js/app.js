@@ -9,55 +9,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (introLoader && !isCheckoutPage) {
-        const introKey = 'hi-branding-intro-seen';
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        let hasSeenIntro = false;
+        introLoader.classList.add('is-active');
 
-        try {
-            hasSeenIntro = window.sessionStorage.getItem(introKey) === 'true';
-        } catch {
-            hasSeenIntro = false;
-        }
+        const introVideo = introLoader.querySelector('#intro-video');
 
-        if (hasSeenIntro || reducedMotion) {
-            introLoader.remove();
+        const dismissIntro = () => {
+            if (!introLoader.parentNode) return;
+            introLoader.classList.add('is-closing');
+            document.documentElement.classList.add('intro-revealing');
+
+            window.setTimeout(() => introLoader.remove(), 750);
+        };
+
+        if (introVideo) {
+            introVideo.play().catch(() => {
+                // Autoplay fallback if blocked
+            });
+            introVideo.addEventListener('ended', dismissIntro);
         } else {
-            introLoader.classList.add('is-active');
-
-            const introVideo = introLoader.querySelector('#intro-video');
-
-            const dismissIntro = () => {
-                if (!introLoader.parentNode) return;
-                introLoader.classList.add('is-closing');
-                document.documentElement.classList.add('intro-revealing');
-
-                try {
-                    window.sessionStorage.setItem(introKey, 'true');
-                } catch {
-                    // Storage can be disabled; the loader still completes normally.
-                }
-
-                window.setTimeout(() => introLoader.remove(), 750);
-            };
-
-            if (introVideo) {
-                introVideo.play().catch(() => {
-                    // Autoplay fallback if blocked
-                });
-                introVideo.addEventListener('ended', dismissIntro);
-            } else {
-                window.setTimeout(dismissIntro, 1800);
-            }
-
-            const handleSkip = () => {
-                dismissIntro();
-                window.removeEventListener('click', handleSkip);
-                window.removeEventListener('keydown', handleSkip);
-            };
-
-            window.addEventListener('click', handleSkip, { once: true });
-            window.addEventListener('keydown', handleSkip, { once: true });
+            window.setTimeout(dismissIntro, 1800);
         }
+
+        const handleSkip = () => {
+            dismissIntro();
+            window.removeEventListener('click', handleSkip);
+            window.removeEventListener('keydown', handleSkip);
+        };
+
+        window.addEventListener('click', handleSkip, { once: true });
+        window.addEventListener('keydown', handleSkip, { once: true });
     }
 
     const storyHero = document.querySelector('[data-story-hero]');

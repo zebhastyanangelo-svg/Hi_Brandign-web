@@ -113,11 +113,11 @@
                 @else
                     <ul style="margin: 0; padding: 0; list-style: none; display: grid; gap: 10px;">
                         @foreach ($paymentMethods as $method)
-                            <li style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600;">
+                            <li style="display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600;">
                                 <span class="payment-method-icon" aria-hidden="true" style="width: 32px; height: 32px;">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
                                 </span>
-                                <span>{{ $method->name }} <small style="display: block; color: var(--muted); font-size: 10px; font-weight: 500;">{{ $method->type_label }}</small></span>
+                                <span>{{ $method->name }} <small style="display: block; color: var(--muted); font-size: 12px; font-weight: 500;">{{ $method->type_label }}</small></span>
                             </li>
                         @endforeach
                     </ul>
@@ -305,7 +305,7 @@
         <h2 style="margin: 24px 0 12px;">¡Reserva enviada!</h2>
         <p class="form-intro" style="max-width: 360px; margin: 0 auto 24px;">Tu reserva ha sido registrada con el número <strong id="booking-reference"></strong>. Revisaremos el comprobante y te confirmaremos por correo.</p>
 
-        <div style="margin-bottom: 24px; padding: 16px; background: #f0e7dc; border-radius: 2px; font-size: 12px;">
+        <div style="margin-bottom: 24px; padding: 16px; background: #f0e7dc; border-radius: 2px; font-size: 14px;">
             <p style="margin: 0 0 8px;"><strong>Asistentes registrados:</strong></p>
             <ul id="success-attendees" style="margin: 0; padding-left: 20px; text-align: left;"></ul>
         </div>

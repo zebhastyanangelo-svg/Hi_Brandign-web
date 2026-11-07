@@ -13,8 +13,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-[#FDFBF7] font-sans text-[#211E1D]">
-    <div class="intro-loader" id="intro-loader" aria-hidden="true">
-        <video autoplay muted playsinline class="max-w-full max-h-screen object-contain m-auto" id="intro-video">
+    <div class="intro-loader fixed inset-0 z-[9999] flex items-center justify-center bg-[#D1CBC2]" id="intro-loader" aria-hidden="true">
+        <video autoplay muted playsinline class="max-w-[92vw] max-h-[90vh] w-auto h-auto object-contain block m-auto" id="intro-video">
             <source src="{{ asset('Vectorizar_isologo_con_impacto_b…_bb828913_1080p.mp4') }}" type="video/mp4">
         </video>
     </div>
