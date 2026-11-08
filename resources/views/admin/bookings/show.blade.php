@@ -98,7 +98,7 @@
         </div>
 
         <section class="attendees-list">
-            <h3 style="margin: 0 0 16px; font-size: 18px; color: var(--rust);">Asistentes ({{ $booking->attendees->count() }})</h3>
+            <h3 style="margin: 0 0 16px; font-size: calc(18px * var(--type-scale)); color: var(--rust);">Asistentes ({{ $booking->attendees->count() }})</h3>
             @forelse ($booking->attendees as $attendee)
                 <article class="attendee-card">
                     <div class="attendee-info">

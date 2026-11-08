@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         );
 
         foreach ([
-            ['name' => 'Daylight', 'slug' => 'daylight', 'description' => 'Un lugar para empezar a encontrarte.', 'price' => 1800, 'billing_period' => 'mes', 'featured' => false, 'features' => ['Acceso flexible entre semana', 'Café de especialidad', 'Comunidad Hi'], 'sort_order' => 1],
+            ['name' => 'Hi sala', 'slug' => 'hi-sala', 'description' => 'Un lugar para empezar a encontrarte.', 'price' => 1800, 'billing_period' => 'mes', 'featured' => false, 'features' => ['Acceso flexible entre semana', 'Café de especialidad', 'Comunidad Hi'], 'sort_order' => 1],
             ['name' => 'Studio', 'slug' => 'studio', 'description' => 'Tu base para hacer crecer lo que sigue.', 'price' => 4200, 'billing_period' => 'mes', 'featured' => true, 'features' => ['Escritorio dedicado', 'Salas de juntas · 8 h', 'Acceso a eventos privados'], 'sort_order' => 2],
             ['name' => 'House', 'slug' => 'house', 'description' => 'Un espacio propio para equipos ambiciosos.', 'price' => 8900, 'billing_period' => 'mes', 'featured' => false, 'features' => ['Oficina privada para 2', 'Salas de juntas · 20 h', 'Acompañamiento estratégico'], 'sort_order' => 3],
         ] as $membership) {

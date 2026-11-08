@@ -1,5 +1,8 @@
 import p5 from 'p5';
 
+/** Escala tipográfica global (+15%) aplicada al texto dibujado en canvas. */
+const TYPE_SCALE = 1.15;
+
 export function createBadgeSketch() {
     return (sketch) => {
         const words = 'HACEMOS HINCAPAIÉ EN TI';
@@ -27,7 +30,7 @@ export function createBadgeSketch() {
             sketch.circle(size / 2, size / 2, radius * 2.12);
             sketch.noStroke();
             sketch.fill(255, 250, 245, hovered ? 255 : 215);
-            sketch.textSize(size * 0.067);
+            sketch.textSize(size * 0.067 * TYPE_SCALE);
 
             sketch.push();
             sketch.translate(size / 2, size / 2);
