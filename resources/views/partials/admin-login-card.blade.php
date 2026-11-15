@@ -30,7 +30,7 @@
         <div class="icon-field">
             <label for="login_email">Correo Electrónico Corporativo</label>
             <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            <input type="email" id="login_email" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="nombre@hibranding.com">
+            <input type="email" id="login_email" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="nombre@hibranding.net">
             @error('email')<span class="field-error">{{ $message }}</span>@enderror
         </div>
 

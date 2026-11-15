@@ -17,7 +17,7 @@
             @foreach($members as $member)
                 <article class="member-card animate__animated animate__flipInY" style="animation-delay: {{ min(($loop->index % 8) * 70, 490) }}ms; animation-fill-mode: both" data-member-category="{{ $member['category'] }}" data-member-search="{{ strtolower($member['name'].' '.$member['company'].' '.$member['role'].' '.$member['category']) }}">
                     <div class="member-avatar member-avatar--{{ $member['tone'] }}">@if(!empty($member['photo_url']))<img src="{{ $member['photo_url'] }}" alt="Retrato de {{ $member['name'] }}" loading="lazy">@else<span>{{ $member['initials'] }}</span>@endif<span class="avatar-index">HI / {{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span></div>
-                    <div class="member-details"><p class="eyebrow">{{ $member['category'] }}</p><h3>{{ $member['name'] }}</h3><p>{{ $member['role'] }}</p><div class="member-bottom"><strong>{{ $member['company'] }}</strong><a href="mailto:{{ $member['email'] ?? 'hola@hibranding.com' }}?subject={{ urlencode('Conectar con '.$member['name']) }}" aria-label="Conectar Office con {{ $member['name'] }}">Conectar Office <span aria-hidden="true">↗</span></a></div></div>
+                    <div class="member-details"><p class="eyebrow">{{ $member['category'] }}</p><h3>{{ $member['name'] }}</h3><p>{{ $member['role'] }}</p><div class="member-bottom"><strong>{{ $member['company'] }}</strong><a href="mailto:{{ $member['email'] ?? 'gerencia@hibranding.net' }}?subject={{ urlencode('Conectar con '.$member['name']) }}" aria-label="Conectar Office con {{ $member['name'] }}">Conectar Office <span aria-hidden="true">↗</span></a></div></div>
                 </article>
             @endforeach
         </div>

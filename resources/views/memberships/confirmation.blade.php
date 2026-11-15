@@ -59,7 +59,7 @@
                 <a class="button button--outline" href="{{ route('events.index') }}">Explorar eventos del club <span aria-hidden="true">→</span></a>
             </div>
 
-            <p class="confirmation-note">¿Dudas? Escríbenos a <a href="mailto:hola@hibranding.com">hola@hibranding.com</a> — Soporte Concierge 1:1.</p>
+            <p class="confirmation-note">¿Dudas? Escríbenos a <a href="mailto:gerencia@hibranding.net">gerencia@hibranding.net</a> — Soporte Concierge 1:1.</p>
         </article>
     </div>
 </main>

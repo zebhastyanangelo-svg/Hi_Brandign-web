@@ -41,7 +41,7 @@
             <div class="guide-body">
                 <ul class="guide-list">
                     <li><strong>Convocatorias de eventos.</strong> Título serif + fecha + lugar + un beneficio concreto.</li>
-                    <li><strong>Membresías.</strong> Precios siempre con “Inversión desde”; nunca “precio” ni “costo”.</li>
+                    <li><strong>Membresías.</strong> El catálogo público presenta beneficios y acompañamiento; las tarifas se comparten en la asesoría, nunca en la tarjeta.</li>
                     <li><strong>Notas de comunidad.</strong> Nombre, organización y un logro medible del socio.</li>
                     <li><strong>Comunicados directivos.</strong> Protocolo sobrio: fondo tinta, tipografía Cormorant, badge terracota.</li>
                 </ul>
@@ -76,7 +76,7 @@
                 <ul class="guide-checklist">
                     <li>¿El titular abre con beneficio y cierra con elegancia?</li>
                     <li>¿Usamos paleta terracota <span class="swatch swatch--rust" aria-hidden="true"></span> o crema <span class="swatch swatch--cream" aria-hidden="true"></span> en acentos?</li>
-                    <li>¿Fechas, precios y cupos están verificados en el panel?</li>
+                    <li>¿Fechas, tarifas internas y cupos están verificados en el panel?</li>
                     <li>¿La imagen transmite luz natural y materiales nobles?</li>
                     <li>¿Revisamos ortografía y traducciones en dos idiomas?</li>
                 </ul>

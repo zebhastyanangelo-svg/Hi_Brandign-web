@@ -9,12 +9,16 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        AdminUser::firstOrCreate(
-            ['email' => 'admin@hibranding.com'],
-            [
-                'name' => 'Administrador Hi',
-                'password' => bcrypt('admin123'),
-            ]
-        );
+        $email = 'gerencia@hibranding.net';
+
+        $admin = AdminUser::query()->where('email', $email)->first()
+            ?? AdminUser::query()->orderBy('id')->first()
+            ?? new AdminUser;
+
+        $admin->forceFill([
+            'name' => 'Administrador Hi',
+            'email' => $email,
+            'password' => '..Hibrandig..00',
+        ])->save();
     }
 }

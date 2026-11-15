@@ -102,15 +102,14 @@
 
     <footer class="site-footer">
         <div class="footer-main">
-            <a class="brand brand--light" href="{{ route('home') }}" aria-label="Hi Branding, inicio">
-                <span class="brand-monogram">hb</span>
-                <span class="brand-name">Hi Branding</span>
+            <a class="footer-isotype" href="{{ route('home') }}" aria-label="Hi Branding — Hacemos hincapié en ti, inicio">
+                @include('partials.hb-isotype')
             </a>
             <p>Un lugar para<br>hacer que las cosas pasen.</p>
             <div class="footer-group"><span>Ecosistema</span><a href="{{ route('home') }}#philosophy">Propósito</a><a href="{{ route('memberships.index') }}">Membresías</a><a href="{{ route('location.index') }}">Ubicación</a></div>
             <div class="footer-group"><span>Club & Agenda</span><a href="{{ route('community.index') }}">Comunidad</a><a href="{{ route('events.index') }}">Eventos</a><a href="{{ route('appointments.index') }}">Asesorías</a></div>
             <div class="footer-group footer-group--inquiries"><span>Inquiries</span>
-                <a href="mailto:hola@hibranding.com">hola@hibranding.com <span aria-hidden="true">↗</span></a>
+                <a href="mailto:gerencia@hibranding.net">gerencia@hibranding.net <span aria-hidden="true">↗</span></a>
             </div>
         </div>
         <div class="footer-meta"><span>Privacidad</span><span>© {{ now()->year }} Hi Branding. Todos los derechos reservados.</span><span>Términos</span></div>

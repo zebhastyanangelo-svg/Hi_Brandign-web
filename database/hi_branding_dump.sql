@@ -46,7 +46,7 @@ CREATE TABLE `admin_users` (
 LOCK TABLES `admin_users` WRITE;
 /*!40000 ALTER TABLE `admin_users` DISABLE KEYS */;
 INSERT INTO `admin_users` VALUES
-(1,'Administrador Hi','admin@hibranding.com','$2y$12$oyi1DP8Au8V2CF0jVoyo/u58ApkvJJjIKaOy5RwHSttkxVTNt1Jxu',NULL,'2026-11-02 02:38:19','2026-11-02 02:38:19');
+(1,'Administrador Hi','gerencia@hibranding.net','$2y$12$EgAFSomfapaL2K8Ns9hN1O7b1DGNHDKiaCl/syZaPAudIr54OoV5m',NULL,'2026-11-02 02:38:19','2026-11-15 20:00:00');
 /*!40000 ALTER TABLE `admin_users` ENABLE KEYS */;
 UNLOCK TABLES;
 DROP TABLE IF EXISTS `appointments`;
@@ -444,9 +444,9 @@ CREATE TABLE `memberships` (
 LOCK TABLES `memberships` WRITE;
 /*!40000 ALTER TABLE `memberships` DISABLE KEYS */;
 INSERT INTO `memberships` VALUES
-(1,'Daylight','daylight','Un lugar para empezar a encontrarte.',1800,'mes',NULL,0,'[\"Acceso flexible entre semana\",\"Caf\\u00e9 de especialidad\",\"Comunidad Hi\"]',1,'2026-11-02 02:38:19','2026-11-02 02:38:19'),
-(2,'Studio','studio','Tu base para hacer crecer lo que sigue.',4200,'mes',NULL,1,'[\"Escritorio dedicado\",\"Salas de juntas \\u00b7 8 h\",\"Acceso a eventos privados\"]',2,'2026-11-02 02:38:19','2026-11-02 02:38:19'),
-(3,'House','house','Un espacio propio para equipos ambiciosos.',8900,'mes',NULL,0,'[\"Oficina privada para 2\",\"Salas de juntas \\u00b7 20 h\",\"Acompa\\u00f1amiento estrat\\u00e9gico\"]',3,'2026-11-02 02:38:19','2026-11-02 02:38:19');
+(1,'Soft Landing (Tu Puente a tu Propósito)','soft-landing','Acompañamiento empresarial y profesional para marcas que buscan oportunidad en el mercado venezolano e internacional.',1800,'mes',NULL,0,'[\"Membres\\u00eda de salas multifuncional.\", \"Asesor\\u00eda en Estrategias de Branding corporativo, employer y territorial.\", \"Servicios log\\u00edsticos ejecutivos, traslados y protocolo corporativo.\", \"Networking Institucional y conexi\\u00f3n directa con c\\u00e1maras de comercio y aliados estrat\\u00e9gicos.\", \"Estrategia de Adaptaci\\u00f3n Cultural y modelo de negocio.\", \"Soporte tecnol\\u00f3gico (desarrollo web, ciberseguridad, agentes IA y Apps).\", \"Cat\\u00e1logo de selecci\\u00f3n y bienestar de talento humano.\"]',1,'2026-11-02 02:38:19','2026-11-15 20:00:00'),
+(2,'Hi Sala (Eventos y Reuniones Corporativas)','hi-sala','Espacio profesional de alta gama con capacidad para 25 a 30 personas.',4200,'mes',NULL,1,'[\"16 horas mensuales fraccionables (Modelo de Consumo Flexible).\", \"Conectividad Wi-Fi de alta velocidad y asistencia t\\u00e9cnica.\", \"Smart TV de 60 pulgadas para presentaciones.\", \"Hidrataci\\u00f3n ilimitada (agua, caf\\u00e9 de especialidad y t\\u00e9).\", \"Control de acceso automatizado con c\\u00f3digo personalizado y seguridad privada.\"]',2,'2026-11-02 02:38:19','2026-11-15 20:00:00'),
+(3,'Hi Plus / Experience (Productos & Soluciones Adicionales)','hi-plus-experience','Servicios paquetizados para elevar el nivel de tu marca y eventos corporativos.',8900,'mes',NULL,0,'[\"Producci\\u00f3n audiovisual (streaming, grabaci\\u00f3n y fotograf\\u00eda profesional).\", \"Branding personalizado del evento en pantallas, se\\u00f1al\\u00e9tica y Material POP.\", \"Catering ejecutivo y estaciones de snacks personalizados.\", \"Creaci\\u00f3n de Landing Pages y automatizaci\\u00f3n con IA.\", \"Asesor\\u00eda y dise\\u00f1o de experiencias para eventos.\"]',3,'2026-11-02 02:38:19','2026-11-15 20:00:00');
 /*!40000 ALTER TABLE `memberships` ENABLE KEYS */;
 UNLOCK TABLES;
 DROP TABLE IF EXISTS `migrations`;

@@ -30,7 +30,7 @@
             <div class="admin-empty-state checkout-empty-state">
                 <span class="empty-icon">🏦</span>
                 <h3>No hay métodos de pago disponibles</h3>
-                <p>Comunícate con nuestro equipo en <a href="mailto:hola@hibranding.com">hola@hibranding.com</a> para recibir las cuentas de pago.</p>
+                <p>Comunícate con nuestro equipo en <a href="mailto:gerencia@hibranding.net">gerencia@hibranding.net</a> para recibir las cuentas de pago.</p>
             </div>
         @else
             <div class="checkout-grid">

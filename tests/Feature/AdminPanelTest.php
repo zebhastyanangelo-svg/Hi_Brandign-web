@@ -8,6 +8,7 @@ use App\Models\CommunityMember;
 use App\Models\Event;
 use App\Models\Membership;
 use App\Models\MembershipOrder;
+use Database\Seeders\AdminUserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -67,6 +68,24 @@ class AdminPanelTest extends TestCase
         ])->assertRedirect(route('admin.dashboard'));
 
         $this->assertAuthenticatedAs($this->admin, 'admin');
+    }
+
+    public function test_admin_user_seeder_updates_legacy_credentials(): void
+    {
+        $this->seed(AdminUserSeeder::class);
+
+        $this->assertDatabaseHas('admin_users', [
+            'id' => $this->admin->id,
+            'email' => 'gerencia@hibranding.net',
+        ]);
+        $this->assertDatabaseMissing('admin_users', ['email' => 'admin@hibranding.com']);
+
+        $this->post(route('admin.login.submit'), [
+            'email' => 'gerencia@hibranding.net',
+            'password' => '..Hibrandig..00',
+        ])->assertRedirect(route('admin.dashboard'));
+
+        $this->assertAuthenticatedAs($this->admin->fresh(), 'admin');
     }
 
     public function test_dashboard_renders_kpis_and_modules(): void

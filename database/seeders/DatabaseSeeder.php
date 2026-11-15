@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\CommunityMember;
 use App\Models\Event;
-use App\Models\Membership;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -28,14 +27,6 @@ class DatabaseSeeder extends Seeder
         );
 
         foreach ([
-            ['name' => 'Hi sala', 'slug' => 'hi-sala', 'description' => 'Un lugar para empezar a encontrarte.', 'price' => 1800, 'billing_period' => 'mes', 'featured' => false, 'features' => ['Acceso flexible entre semana', 'Café de especialidad', 'Comunidad Hi'], 'sort_order' => 1],
-            ['name' => 'Studio', 'slug' => 'studio', 'description' => 'Tu base para hacer crecer lo que sigue.', 'price' => 4200, 'billing_period' => 'mes', 'featured' => true, 'features' => ['Escritorio dedicado', 'Salas de juntas · 8 h', 'Acceso a eventos privados'], 'sort_order' => 2],
-            ['name' => 'House', 'slug' => 'house', 'description' => 'Un espacio propio para equipos ambiciosos.', 'price' => 8900, 'billing_period' => 'mes', 'featured' => false, 'features' => ['Oficina privada para 2', 'Salas de juntas · 20 h', 'Acompañamiento estratégico'], 'sort_order' => 3],
-        ] as $membership) {
-            Membership::updateOrCreate(['slug' => $membership['slug']], $membership);
-        }
-
-        foreach ([
             ['name' => 'Lucía Herrera', 'slug' => 'lucia-herrera', 'company' => 'Norte Studio', 'role' => 'Founder & Creative Director', 'category' => 'Consumer & Creative', 'initials' => 'LH', 'tone' => 'clay', 'email' => 'lucia@example.com', 'photo_url' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=82'],
             ['name' => 'Mateo Ríos', 'slug' => 'mateo-rios', 'company' => 'Forma Capital', 'role' => 'Managing Partner', 'category' => 'Fintech & VC', 'initials' => 'MR', 'tone' => 'olive', 'email' => 'mateo@example.com', 'photo_url' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=82'],
             ['name' => 'Camila Duarte', 'slug' => 'camila-duarte', 'company' => 'Nativa Labs', 'role' => 'Co-founder', 'category' => 'AI & Deeptech', 'initials' => 'CD', 'tone' => 'blue', 'email' => 'camila@example.com', 'photo_url' => 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=700&q=82'],
@@ -56,6 +47,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->call(PaymentMethodSeeder::class);
+        $this->call(MembershipSeeder::class);
         $this->call(AdminUserSeeder::class);
         $this->call(DashboardDemoSeeder::class);
     }

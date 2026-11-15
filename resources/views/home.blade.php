@@ -10,21 +10,34 @@
         <div class="story-hero-canvas" id="hero-canvas" aria-hidden="true"></div>
         <div class="story-hero-inner">
             <p class="eyebrow eyebrow--light"><span class="eyebrow-dot"></span> Propósito & identidad</p>
-            <h1 class="font-serif animate__animated animate__swing" id="hero-title">Donde el Talento Converge y el Futuro <em>se Construye.</em></h1>
-            <p class="story-hero-copy">Hacemos hincapié en ti. En el valor de tu visión y en el lugar que merece para crecer.</p>
+            <h1 class="font-serif animate__animated animate__swing" id="hero-title">Hacemos hincapié en <em>ti</em>, en el valor de tu visión y el lugar que mereces para crecer.</h1>
+            <p class="story-hero-copy">Donde el Talento Converge y el Futuro se Construye.</p>
             <div class="landing-actions flex items-center"><a class="button button--rust" href="{{ route('memberships.index') }}">Descubrir Membresías <span aria-hidden="true">↗</span></a><a class="text-link text-link--light" href="#philosophy">Nuestra Filosofía <span aria-hidden="true">↓</span></a></div>
         </div>
         <div class="story-hero-caption"><span>CASA HI · SANTIAGO</span><span>ESPACIOS PARA CONECTAR</span></div>
-        <div class="space-finder story-space-finder"><label class="finder-search"><span aria-hidden="true">⌕</span><input type="search" data-space-search placeholder="¿Qué espacio necesitas?" aria-label="Buscar espacios"></label><div class="finder-filters" role="group" aria-label="Filtrar espacios"><button class="filter-button is-active" type="button" data-space-filter="all" aria-pressed="true">Todos</button><button class="filter-button" type="button" data-space-filter="Eventos" aria-pressed="false">Eventos & grupos</button><button class="filter-button" type="button" data-space-filter="Coworking" aria-pressed="false">Coworking</button><button class="filter-button" type="button" data-space-filter="Salud" aria-pressed="false">Salud & telemedicina</button></div><a class="finder-submit" href="{{ route('memberships.index') }}">Explorar espacios <span aria-hidden="true">↗</span></a></div>
+        <div class="space-finder story-space-finder"><label class="finder-search"><span aria-hidden="true">⌕</span><input type="search" data-space-search placeholder="¿Qué espacio necesitas?" aria-label="Buscar espacios"></label><div class="finder-filters" role="group" aria-label="Filtrar espacios"><button class="filter-button is-active" type="button" data-space-filter="all" aria-pressed="true">Todos</button><button class="filter-button" type="button" data-space-filter="Acompañamiento" aria-pressed="false">Acompañamiento</button><button class="filter-button" type="button" data-space-filter="Eventos" aria-pressed="false">Eventos & reuniones</button><button class="filter-button" type="button" data-space-filter="Experiencias" aria-pressed="false">Productos & experiencias</button></div><a class="finder-submit" href="{{ route('memberships.index') }}">Explorar espacios <span aria-hidden="true">↗</span></a></div>
     </section>
 
     <section class="home-memberships section-wrap" id="spaces">
         <div class="section-heading"><div><p class="eyebrow">Espacios diseñados para la excelencia</p><h2 class="animate__animated animate__swing">Encuentra tu forma <em>de crecer.</em></h2></div><p class="section-heading-note">Diseño que inspira, tecnología que acompaña y una comunidad hecha para conectar.</p></div>
         <div class="space-card-grid grid">
             @foreach($memberships as $membership)
-                <article class="space-card" data-space-card data-space-category="{{ $loop->first ? 'Eventos' : ($loop->last ? 'Salud' : 'Coworking') }}" data-space-name="{{ strtolower($membership->name.' '.$membership->description) }}">
-                    <a class="space-card-photo space-card-photo--{{ $loop->iteration }}" href="{{ route('memberships.index') }}" aria-label="Conocer {{ $membership->name }}"><span>{{ $membership->capacity ?? ($loop->first ? 'Capacidad 25–30' : ($loop->last ? 'Capacidad 12' : 'Flexible')) }}</span></a>
-                    <div class="space-card-content"><p class="eyebrow">{{ $loop->first ? 'Eventos & grupo' : ($loop->last ? 'Salud & telemedicina' : 'Coworking & networking') }}</p><h3>{{ $membership->name }}</h3><p>{{ $membership->description }}</p><ul>@foreach(array_slice($membership->features, 0, 3) as $feature)<li><span aria-hidden="true">✳</span>{{ $feature }}</li>@endforeach</ul><div class="space-card-price"><span>Inversión desde</span><strong>${{ number_format($membership->price) }} <small>/ mes</small></strong></div><a class="button {{ $membership->featured ? 'button--rust' : 'button--outline' }}" href="{{ route('memberships.checkout', $membership->slug) }}">Suscribirme ahora <span aria-hidden="true">↗</span></a></div>
+                @php
+                    $planNumber = str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT);
+                    $planCategory = match ($loop->iteration) {
+                        1 => 'Acompañamiento',
+                        2 => 'Eventos',
+                        default => 'Experiencias',
+                    };
+                    $planCategoryLabel = match ($planCategory) {
+                        'Acompañamiento' => 'Acompañamiento',
+                        'Eventos' => 'Eventos & reuniones',
+                        default => 'Productos & experiencias',
+                    };
+                @endphp
+                <article class="space-card" data-space-card data-space-category="{{ $planCategory }}" data-space-name="{{ strtolower($membership->name.' '.$membership->description) }}">
+                    <a class="space-card-photo space-card-photo--{{ $loop->iteration }}" href="{{ route('memberships.checkout', $membership->slug) }}" aria-label="Conocer {{ $membership->name }}"><span>Membresía {{ $planNumber }}</span></a>
+                    <div class="space-card-content"><p class="eyebrow">{{ $planCategoryLabel }}</p><h3>{{ $membership->name }}</h3><p>{{ $membership->description }}</p><ul>@foreach($membership->features as $feature)<li><span aria-hidden="true">✳</span>{{ $feature }}</li>@endforeach</ul><a class="button {{ $membership->featured ? 'button--rust' : 'button--outline' }}" href="{{ route('memberships.checkout', $membership->slug) }}">Suscribirme ahora <span aria-hidden="true">↗</span></a></div>
                 </article>
             @endforeach
         </div>

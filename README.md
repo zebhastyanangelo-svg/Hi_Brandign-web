@@ -60,8 +60,10 @@ El sistema incluye además una ruta de respaldo automática (`/storage/{path}`) 
 ### 5. Acceso al Panel Directivo (`/admin`)
 
 - **URL:** `https://hibranding.net/admin/login`
-- **Usuario inicial:** `admin@hibranding.com`
-- **Contraseña inicial:** `admin123` *(se recomienda actualizarla tras el primer ingreso en **Configuración → Actualizar contraseña**)*.
+- **Usuario:** `gerencia@hibranding.net`
+- **Contraseña:** `..Hibrandig..00` *(puede actualizarse después del primer ingreso en **Configuración → Actualizar contraseña**)*.
+
+> Para actualizar una base existente sin reinstalar, ejecuta `php artisan db:seed --class=AdminUserSeeder --force`. El seeder renombra la cuenta directiva anterior y sincroniza la contraseña indicada.
 
 ## Comandos útiles de mantenimiento
 
@@ -71,6 +73,10 @@ npm run build
 
 # Ejecutar migraciones y seeders en MySQL
 php artisan migrate --seed --force
+
+# Actualizar credenciales directivas y catálogo de membresías en una base existente
+php artisan db:seed --class=AdminUserSeeder --force
+php artisan db:seed --class=MembershipSeeder --force
 
 # Limpiar cachés de Laravel
 php artisan optimize:clear

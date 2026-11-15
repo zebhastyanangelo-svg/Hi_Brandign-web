@@ -129,11 +129,8 @@ class MembershipController extends Controller
             return $memberships;
         }
 
-        return collect([
-            (object) ['slug' => 'class-sala', 'name' => 'Class Sala', 'description' => 'Ideal para eventos corporativos, reuniones grupales y talleres de alto nivel.', 'price' => 450, 'billing_period' => 'mes', 'featured' => false, 'features' => ['85” Smart TV & Audio Pro', 'Wi-Fi de alta velocidad', 'Seguridad y acceso privado'], 'capacity' => 'Capacidad 25–30'],
-            (object) ['slug' => 'pass-ejecutivo', 'name' => 'Pass Ejecutivo', 'description' => 'Pensado para profesionales que buscan un entorno elegante, conectivo y flexible.', 'price' => 180, 'billing_period' => 'mes', 'featured' => true, 'features' => ['Opciones por día y medio día', 'Acceso exclusivo a Lobby & Lounge', 'Café de especialidad'], 'capacity' => 'Flexible'],
-            (object) ['slug' => 'medical-suma', 'name' => 'Medical Suma', 'description' => 'Un espacio clínico y ejecutivo para consultas especializadas y telemedicina.', 'price' => 320, 'billing_period' => 'mes', 'featured' => false, 'features' => ['Mesa ejecutiva de alta gama', 'Pantalla para presentaciones', 'Acceso controlado'], 'capacity' => 'Capacidad 12'],
-        ]);
+        return collect(Membership::defaultCatalog())
+            ->map(fn (array $plan): object => (object) $plan);
     }
 
     /**

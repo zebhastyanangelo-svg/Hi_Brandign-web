@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\CommunityMember;
 use App\Models\Event;
+use App\Models\Membership;
+use Database\Seeders\MembershipSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,8 +18,13 @@ class PortalPagesTest extends TestCase
         $this->get(route('home'))
             ->assertOk()
             ->assertSee('animate__animated animate__swing')
-            ->assertSee('Donde el Talento')
-            ->assertSee('Class Sala')
+            ->assertSee('Hacemos hincapié en')
+            ->assertSee('Donde el Talento Converge y el Futuro se Construye.')
+            ->assertSee('Soft Landing')
+            ->assertSee('Hi Sala')
+            ->assertSee('Hi Plus / Experience')
+            ->assertDontSee('Inversión desde')
+            ->assertDontSee('$1,800')
             ->assertSee('bg-[#FDFBF7]')
             ->assertSee('font-sans')
             ->assertSee('font-serif')
@@ -35,7 +42,13 @@ class PortalPagesTest extends TestCase
         $this->get(route('memberships.index'))
             ->assertOk()
             ->assertSee('Espacios diseñados para')
-            ->assertSee('Suscribirme ahora');
+            ->assertSee('Membresía 01')
+            ->assertSee('Soft Landing')
+            ->assertSee('Hi Sala')
+            ->assertSee('Hi Plus / Experience')
+            ->assertSee('Suscribirme ahora')
+            ->assertDontSee('Inversión desde')
+            ->assertDontSee('/ mes');
 
         $this->get(route('location.index'))
             ->assertOk()
@@ -94,6 +107,37 @@ class PortalPagesTest extends TestCase
     {
         $this->post(route('appointments.store'), [])
             ->assertSessionHasErrors(['name', 'email', 'focus', 'scheduled_at', 'meeting_type']);
+    }
+
+    public function test_membership_seeder_publishes_the_three_official_plans(): void
+    {
+        Membership::create([
+            'name' => 'Daylight',
+            'slug' => 'daylight',
+            'description' => 'Plan anterior.',
+            'price' => 1800,
+            'billing_period' => 'mes',
+            'featured' => false,
+            'features' => ['Plan anterior'],
+            'sort_order' => 1,
+        ]);
+
+        $this->seed(MembershipSeeder::class);
+
+        $this->assertDatabaseCount('memberships', 3);
+        $this->assertDatabaseMissing('memberships', ['slug' => 'daylight']);
+        $this->assertDatabaseHas('memberships', [
+            'slug' => 'soft-landing',
+            'name' => 'Soft Landing (Tu Puente a tu Propósito)',
+        ]);
+        $this->assertDatabaseHas('memberships', [
+            'slug' => 'hi-sala',
+            'name' => 'Hi Sala (Eventos y Reuniones Corporativas)',
+        ]);
+        $this->assertDatabaseHas('memberships', [
+            'slug' => 'hi-plus-experience',
+            'name' => 'Hi Plus / Experience (Productos & Soluciones Adicionales)',
+        ]);
     }
 
     public function test_community_and_event_pages_render_database_records(): void
